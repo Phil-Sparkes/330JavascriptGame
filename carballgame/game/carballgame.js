@@ -6,10 +6,9 @@ class CarBallGame {
 
         const GRAVITY    = 0.3;
 
-        const CAR_WIDTH  = 40;
-        const CAR_HEIGHT = 40;
 
         const BALL_RADIUS = 10;
+        const BALL_MAX_SPEED = 15;
 
         var canvasContext;
         var canvas;
@@ -19,21 +18,23 @@ class CarBallGame {
         var ballXSpeed = 0;
         var ballYSpeed = 0;
 
-        var carXPos   = 100;
-        var carYPos   = CANVAS_HEIGHT - 100;
-        var carXSpeed = 0;
-        var carYSpeed = 0;
-
-        var canJump = true;
 
         var keyW = false;
         var keyA = false;
         var keyS = false;
         var keyD = false;
 
+        var player1;
+        var theBall;
+
 
 
         window.onload = function () {
+            player1 = new Car;
+            player1.Init(0,0);
+            theBall = new Ball;
+            theBall.Init(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+
             canvas = document.getElementById('canvas');
             canvasContext = canvas.getContext('2d');
 
@@ -46,16 +47,13 @@ class CarBallGame {
             window.addEventListener("keydown", onKeyDown);
             window.addEventListener("keyup", onKeyUp);
         }
-
         function onKeyDown(event) {
-            //carYSpeed = 0;
-            //carXSpeed = 0;
             //w
             if (event.keyCode == 87) {
                 keyW = true;
-                if (canJump){
-                    carYSpeed -= 10;
-                    canJump = false;
+                if (player1.canJump){
+                    player1.ySpeed -= player1.JUMP_FORCE;
+                    player1.canJump = false;
                 }
 
             }
@@ -94,137 +92,136 @@ class CarBallGame {
 
         function moveEverything() {
 
+            player1.Update(keyA, keyS, keyD, GRAVITY, slowAfterTime);
+            theBall.Update(GRAVITY, slowAfterTime);
 
+            if (checkCollision(player1, theBall.xPos - theBall.RADIUS, theBall.yPos - theBall.RADIUS, theBall.RADIUS * 2, theBall.RADIUS * 2))
+                collisionResult(player1, theBall,ballYSpeed, ballXPos, ballYPos);
 
-            // Set speed to 0
-            //carXSpeed = 0;
-            //carYSpeed = 0;
-
-
-            // Add speed depending on buttons pressed
-            if (keyW){
-                //carYSpeed -= 1;
-            }
-            if (keyA){
-                carXSpeed -= 1;
-            }
-            if (keyS){
-                carYSpeed += 1;
-            }
-            if (keyD){
-                carXSpeed += 1;
-            }
+            player1.Clamp(CANVAS_WIDTH, CANVAS_HEIGHT);
+            theBall.Clamp(CANVAS_WIDTH, CANVAS_HEIGHT);
+            // // clamp ball position
+            // if (ballXPos < 0) {
+            //     ballXSpeed = -ballXSpeed;
+            //     ballXPos = 0;
+            // }
+            // else if (ballXPos > CANVAS_WIDTH - BALL_RADIUS) {
+            //     ballXSpeed = -ballXSpeed;
+            //     ballXPos = CANVAS_WIDTH - BALL_RADIUS;
+            // }
+            // if (ballYPos < 0) {
+            //     ballYSpeed = -ballYSpeed;
+            //     ballYPos = 0;
+            // }
+            // else if (ballYPos > CANVAS_HEIGHT - BALL_RADIUS) {
+            //     ballYSpeed = -ballYSpeed;
+            //     ballYPos = CANVAS_HEIGHT - BALL_RADIUS;
+            // }
 
             // apply gravity
-            addGravity();
+            // addGravity();
 
             // Slow down after time
-
-            carXSpeed = slowAfterTime(carXSpeed);
-            carYSpeed = slowAfterTime(carYSpeed);
-            ballXSpeed = slowAfterTime(ballXSpeed);
-            ballYSpeed = slowAfterTime(ballYSpeed);
-
-
-            // Clamp car speed
-            if (carXSpeed > 5)
-                carXSpeed = 5;
-            else if (carXSpeed < -5)
-                carXSpeed = -5;
-            if (carYSpeed > 10)
-                carYSpeed = 10;
-            else if (carYSpeed < -10)
-                carYSpeed = -10;
-
-            // apply movement due to speed
-            carXPos += carXSpeed;
-            carYPos += carYSpeed;
+            // ballXSpeed = slowAfterTime(ballXSpeed);
+            // ballYSpeed = slowAfterTime(ballYSpeed);
             //
-            ballXPos += ballXSpeed;
-            ballYPos += ballYSpeed;
+            // // apply movement
+            // ballXPos += ballXSpeed;
+            // ballYPos += ballYSpeed;
 
-            if (checkCollision(carXPos, carYPos, CAR_WIDTH, CAR_HEIGHT, ballXPos - BALL_RADIUS, ballYPos - BALL_RADIUS, BALL_RADIUS * 2, BALL_RADIUS * 2))
-                collisionResult(carXSpeed, carYSpeed, carXPos + CAR_WIDTH/2, carYPos + CAR_HEIGHT/2, ballXSpeed,ballYSpeed, ballXPos, ballYPos);
-
-            // clamp ball position
-            if (ballXPos < 0) {
-                ballXSpeed = -ballXSpeed;
-                ballXPos = 0;
-            }
-            else if (ballXPos > CANVAS_WIDTH - BALL_RADIUS) {
-                ballXSpeed = -ballXSpeed;
-                ballXPos = CANVAS_WIDTH - BALL_RADIUS;
-            }
-            if (ballYPos < 0) {
-                ballYSpeed = -ballYSpeed;
-                ballYPos = 0;
-            }
-            else if (ballYPos > CANVAS_HEIGHT - BALL_RADIUS) {
-                ballYSpeed = -ballYSpeed;
-                ballYPos = CANVAS_HEIGHT - BALL_RADIUS;
-            }
-
-            // clamp car position
-            if (carXPos < 0) {
-                carXPos = 0;
-                carXSpeed = 0;
-            }
-            else if (carXPos > CANVAS_WIDTH - CAR_WIDTH) {
-                carXPos = CANVAS_WIDTH - CAR_WIDTH;
-                carXSpeed = 0;
-            }
-            if (carYPos < 0) {
-                carYPos = 0;
-                carYSpeed = 0;
-            }
-            else if (carYPos > CANVAS_HEIGHT - CAR_HEIGHT) {
-                carYPos = CANVAS_HEIGHT - CAR_HEIGHT;
-                carYSpeed = 0;
-                canJump = true;
-            }
-
+            // clamp ball speed
+            // if (ballXSpeed > BALL_MAX_SPEED)
+            //     ballXSpeed = BALL_MAX_SPEED;
+            // if (ballXSpeed < -BALL_MAX_SPEED)
+            //     ballXSpeed = -BALL_MAX_SPEED;
+            // if (ballYSpeed > BALL_MAX_SPEED)
+            //     ballYSpeed = BALL_MAX_SPEED;
+            // if (ballYSpeed < -BALL_MAX_SPEED)
+            //     ballYSpeed = -BALL_MAX_SPEED;
 
         }
 
         // https://stackoverflow.com/questions/2440377/javascript-collision-detection
-        function checkCollision(aX, aY, aWidth, aHeight, bX, bY, bWidth, bHeight) {
+        function checkCollision(a, bX, bY, bWidth, bHeight) {
             return !(
-                ((aY + aHeight) < (bY)) ||
-                (aY > (bY + bHeight)) ||
-                ((aX + aWidth) < bX) ||
-                (aX > (bX + bWidth))
+                ((a.yPos + a.HEIGHT) < (bY)) ||
+                (a.yPos > (bY + bHeight)) ||
+                ((a.xPos + a.WIDTH) < bX) ||
+                (a.xPos > (bX + bWidth))
             );
         }
 
-        function collisionResult(aSpeedX, aSpeedY, aPosX, aPosY, bSpeedX, bSpeedY, bPosX, bPosY) {
+        function collisionResult(car, ball, bSpeedY, bPosX, bPosY) {
             var speedX;
             var speedY;
+            var speed;
             var velocityX;
             var velocityY;
             var angleX;
             var angleY;
 
-            speedX = aSpeedX - bSpeedX;
-            speedY = aSpeedY - bSpeedY;
+            //speedX = a.xSpeed + bSpeedX;
+            //speedY = a.ySpeed + bSpeedY;
 
-            angleX = aPosX - bPosX;
-            angleY = aPosY - bPosY;
+            angleX = -((car.xPos + car.WIDTH/2) - ball.xPos);
+            angleY = -((car.yPos + car.HEIGHT/2) - ball.yPos);
+            ball.xSpeed = angleX;
+            ball.ySpeed = angleY;
 
-            ballXSpeed = -angleX;
-            ballYSpeed = -angleY;
+            // if (speedX > 0)
+            //     speedX -5;
+            // else
+            //     speedX +5;
+            // if (speedY > 0)
+            //     speedY -5;
+            // else
+            //     speedY +5;
 
 
-            velocityX = aSpeedX + bSpeedX;
 
-            //if (aSpeedX > 0 && bSpeedX > 0)
-                //bSpeedX = -bSpeedX;
-            //if (aSpeedX < 0 && bSpeedX < 0)
-                //bSpeedX = -bSpeedX;
+
+            // if (angleX > 0 && angleY > 0) {
+            //     velocityX = angleX / (angleX + angleY);
+            //     velocityY = angleY / (angleX + angleY);
+            // }
+            // else if (angleX < 0 && angleY < 0) {
+            //     velocityX = angleX / (angleX + angleY);
+            //     velocityY = angleY / (angleX + angleY);
+            // }
+            //
+            // else if (angleX > 0 && angleY < 0) {
+            //     velocityX = angleX / (angleX + -angleY);
+            //     velocityY = (angleY / (-angleX + angleY));
+            // }
+            // else if (angleX < 0 && angleY > 0) {
+            //     velocityX = (angleX / (angleX + -angleY));
+            //     velocityY = angleY / (-angleX + angleY);
+            // }
+            //
+            // //velocityX = angleX / (angleX + angleY);
+            // //velocityY = angleY / (angleX + angleY);
+            //
+            //
+            //
+            // if (speedX < 0)
+            //     speedX * -1;
+            // if (speedY < 0)
+            //     speedY * -1;
+            //
+            // speed = speedX + speedY
+            //
+            // ballXSpeed = velocityX * speed;
+            // ballYSpeed = velocityY * speed;
+            //
+            // if (ballYPos < carXPos)
+            //     //ballYPos -= 10;
+            //     ballYSpeed -= 5;
+
             return;
         }
 
         function slowAfterTime(speed) {
-            speed -= (speed / 100)
+            speed -= (speed / 100);
             if (speed > 0)
                 speed -= .02;
             else if (speed < 0)
@@ -232,15 +229,13 @@ class CarBallGame {
             return speed;
         }
 
-        function addGravity() {
-            carYSpeed += GRAVITY;
-            ballYSpeed += GRAVITY;
-        }
-
         function drawEverything() {
+            // Draw Background
             colorRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, 'lightgreen');
-            colorCircle(ballXPos, ballYPos, BALL_RADIUS, 'black');
-            colorRect(carXPos, carYPos, CAR_WIDTH, CAR_HEIGHT, 'black');
+
+            // Draw Objects
+            theBall.Draw(colorCircle);
+            player1.Draw(colorRect);
         }
 
         function colorCircle(centerX, centerY, radius, drawColor) {
