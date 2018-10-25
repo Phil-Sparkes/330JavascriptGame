@@ -6,32 +6,36 @@ class CarBallGame {
 
         const GRAVITY    = 0.3;
 
-
-        const BALL_RADIUS = 10;
-        const BALL_MAX_SPEED = 15;
-
         var canvasContext;
         var canvas;
-
-        var ballXPos   = CANVAS_WIDTH/2;
-        var ballYPos   = CANVAS_HEIGHT/2;
-        var ballXSpeed = 0;
-        var ballYSpeed = 0;
-
 
         var keyW = false;
         var keyA = false;
         var keyS = false;
         var keyD = false;
 
+        var keyUpArrow = false;
+        var keyLeftArrow = false;
+        var keyDownArrow = false;
+        var keyRightArrow = false;
+
         var player1;
+        var player2;
         var theBall;
+
+        var score = 0;
+        var highScore = 0;
 
 
 
         window.onload = function () {
+            //Init players and ball
             player1 = new Car;
-            player1.Init(0,0);
+            player1.Init(40 ,CANVAS_HEIGHT, 'red');
+
+            player2 = new Car;
+            player2.Init(CANVAS_WIDTH - 80 ,CANVAS_HEIGHT, 'blue');
+
             theBall = new Ball;
             theBall.Init(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
 
@@ -69,6 +73,28 @@ class CarBallGame {
             if (event.keyCode == 68) {
                 keyD = true;
             }
+
+            //up
+            if (event.keyCode == 38) {
+                keyUpArrow = true;
+                if (player2.canJump){
+                    player2.ySpeed -= player2.JUMP_FORCE;
+                    player2.canJump = false;
+                }
+
+            }
+            //left
+            if (event.keyCode == 37) {
+                keyLeftArrow = true;
+            }
+            //down
+            if (event.keyCode == 40) {
+                keyDownArrow = true;
+            }
+            //right
+            if (event.keyCode == 39) {
+                keyRightArrow = true;
+            }
         }
 
         function onKeyUp(event) {
@@ -88,57 +114,42 @@ class CarBallGame {
             if (event.keyCode == 68) {
                 keyD = false;
             }
+            //up
+            if (event.keyCode == 38) {
+                keyUpArrow = false;
+            }
+            //left
+            if (event.keyCode == 37) {
+                keyLeftArrow = false;
+            }
+            //down
+            if (event.keyCode == 40) {
+                keyDownArrow = false;
+            }
+            //right
+            if (event.keyCode == 39) {
+                keyRightArrow = false;
+            }
         }
 
         function moveEverything() {
 
+            // Update player and ball
             player1.Update(keyA, keyS, keyD, GRAVITY, slowAfterTime);
+            player2.Update(keyLeftArrow, keyDownArrow, keyRightArrow, GRAVITY, slowAfterTime);
             theBall.Update(GRAVITY, slowAfterTime);
 
+            // check collisions
             if (checkCollision(player1, theBall.xPos - theBall.RADIUS, theBall.yPos - theBall.RADIUS, theBall.RADIUS * 2, theBall.RADIUS * 2))
-                collisionResult(player1, theBall,ballYSpeed, ballXPos, ballYPos);
+                collisionResult(player1, theBall);
 
+            if (checkCollision(player2, theBall.xPos - theBall.RADIUS, theBall.yPos - theBall.RADIUS, theBall.RADIUS * 2, theBall.RADIUS * 2))
+                collisionResult(player2, theBall);
+
+            // Clamp objects to screen
             player1.Clamp(CANVAS_WIDTH, CANVAS_HEIGHT);
-            theBall.Clamp(CANVAS_WIDTH, CANVAS_HEIGHT);
-            // // clamp ball position
-            // if (ballXPos < 0) {
-            //     ballXSpeed = -ballXSpeed;
-            //     ballXPos = 0;
-            // }
-            // else if (ballXPos > CANVAS_WIDTH - BALL_RADIUS) {
-            //     ballXSpeed = -ballXSpeed;
-            //     ballXPos = CANVAS_WIDTH - BALL_RADIUS;
-            // }
-            // if (ballYPos < 0) {
-            //     ballYSpeed = -ballYSpeed;
-            //     ballYPos = 0;
-            // }
-            // else if (ballYPos > CANVAS_HEIGHT - BALL_RADIUS) {
-            //     ballYSpeed = -ballYSpeed;
-            //     ballYPos = CANVAS_HEIGHT - BALL_RADIUS;
-            // }
-
-            // apply gravity
-            // addGravity();
-
-            // Slow down after time
-            // ballXSpeed = slowAfterTime(ballXSpeed);
-            // ballYSpeed = slowAfterTime(ballYSpeed);
-            //
-            // // apply movement
-            // ballXPos += ballXSpeed;
-            // ballYPos += ballYSpeed;
-
-            // clamp ball speed
-            // if (ballXSpeed > BALL_MAX_SPEED)
-            //     ballXSpeed = BALL_MAX_SPEED;
-            // if (ballXSpeed < -BALL_MAX_SPEED)
-            //     ballXSpeed = -BALL_MAX_SPEED;
-            // if (ballYSpeed > BALL_MAX_SPEED)
-            //     ballYSpeed = BALL_MAX_SPEED;
-            // if (ballYSpeed < -BALL_MAX_SPEED)
-            //     ballYSpeed = -BALL_MAX_SPEED;
-
+            player2.Clamp(CANVAS_WIDTH, CANVAS_HEIGHT);
+            score = theBall.Clamp(CANVAS_WIDTH, CANVAS_HEIGHT, score);
         }
 
         // https://stackoverflow.com/questions/2440377/javascript-collision-detection
@@ -151,71 +162,19 @@ class CarBallGame {
             );
         }
 
-        function collisionResult(car, ball, bSpeedY, bPosX, bPosY) {
-            var speedX;
-            var speedY;
-            var speed;
-            var velocityX;
-            var velocityY;
-            var angleX;
-            var angleY;
-
-            //speedX = a.xSpeed + bSpeedX;
-            //speedY = a.ySpeed + bSpeedY;
+        function collisionResult(car, ball) {
+            let angleX;
+            let angleY;
 
             angleX = -((car.xPos + car.WIDTH/2) - ball.xPos);
             angleY = -((car.yPos + car.HEIGHT/2) - ball.yPos);
+
             ball.xSpeed = angleX;
             ball.ySpeed = angleY;
 
-            // if (speedX > 0)
-            //     speedX -5;
-            // else
-            //     speedX +5;
-            // if (speedY > 0)
-            //     speedY -5;
-            // else
-            //     speedY +5;
-
-
-
-
-            // if (angleX > 0 && angleY > 0) {
-            //     velocityX = angleX / (angleX + angleY);
-            //     velocityY = angleY / (angleX + angleY);
-            // }
-            // else if (angleX < 0 && angleY < 0) {
-            //     velocityX = angleX / (angleX + angleY);
-            //     velocityY = angleY / (angleX + angleY);
-            // }
-            //
-            // else if (angleX > 0 && angleY < 0) {
-            //     velocityX = angleX / (angleX + -angleY);
-            //     velocityY = (angleY / (-angleX + angleY));
-            // }
-            // else if (angleX < 0 && angleY > 0) {
-            //     velocityX = (angleX / (angleX + -angleY));
-            //     velocityY = angleY / (-angleX + angleY);
-            // }
-            //
-            // //velocityX = angleX / (angleX + angleY);
-            // //velocityY = angleY / (angleX + angleY);
-            //
-            //
-            //
-            // if (speedX < 0)
-            //     speedX * -1;
-            // if (speedY < 0)
-            //     speedY * -1;
-            //
-            // speed = speedX + speedY
-            //
-            // ballXSpeed = velocityX * speed;
-            // ballYSpeed = velocityY * speed;
-            //
-            // if (ballYPos < carXPos)
-            //     //ballYPos -= 10;
-            //     ballYSpeed -= 5;
+            score++;
+            if (score > highScore)
+                highScore = score;
 
             return;
         }
@@ -236,6 +195,11 @@ class CarBallGame {
             // Draw Objects
             theBall.Draw(colorCircle);
             player1.Draw(colorRect);
+            player2.Draw(colorRect);
+
+            // Draw text
+            displayText("Score: " + score.toFixed(0), CANVAS_WIDTH/2 , 75, "red");
+            displayText("HighScore: " + highScore.toFixed(0), CANVAS_WIDTH/2 , 35, "red");
         }
 
         function colorCircle(centerX, centerY, radius, drawColor) {
@@ -248,6 +212,14 @@ class CarBallGame {
         function colorRect(leftX, topY, width, height, drawColor) {
             canvasContext.fillStyle = drawColor;
             canvasContext.fillRect(leftX, topY, width, height);
+        }
+
+        function displayText(text, x, y, colour) {
+            canvasContext.font="60px Arial";
+            canvasContext.font = "30px Comic Sans MS";
+            canvasContext.fillStyle = colour;
+            canvasContext.textAlign = "center";
+            canvasContext.fillText(text, x, y);
         }
     }
 }

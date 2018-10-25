@@ -12,7 +12,7 @@ class Ball {
         this.RADIUS = 10;
         this.MAX_SPEED = 15;
     }
-    Clamp(CANVAS_WIDTH, CANVAS_HEIGHT) {
+    Clamp(CANVAS_WIDTH, CANVAS_HEIGHT, score) {
         // clamp ball position
         if (this.xPos < 0) {
             this.xSpeed = -this.xSpeed;
@@ -29,7 +29,9 @@ class Ball {
         else if (this.yPos > CANVAS_HEIGHT - this.RADIUS) {
             this.ySpeed = -this.ySpeed;
             this.yPos = CANVAS_HEIGHT - this.RADIUS;
+            score = 0;
         }
+        return score;
     }
     Update(GRAVITY, slowAfterTime) {
 

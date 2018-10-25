@@ -1,8 +1,5 @@
 class Car {
-    Init(x,y) {
-        this.xPos = 0;
-        this.yPos = 0;
-
+    Init(x,y, colour) {
         this.xPos = x;
         this.yPos = y;
         this.xSpeed = 0;
@@ -14,6 +11,8 @@ class Car {
         this.HEIGHT = 40;
         this.MAX_SPEED = 10;
         this.JUMP_FORCE = 10;
+
+        this.colour = colour;
 
     }
     Update(leftKey, downKey, rightKey, GRAVITY, slowAfterTime) {
@@ -69,6 +68,6 @@ class Car {
         }
     }
     Draw(colorRect) {
-        colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, 'black');
+        colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
     }
 }
