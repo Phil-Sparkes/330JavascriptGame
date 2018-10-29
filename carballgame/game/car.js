@@ -1,4 +1,7 @@
-class Car {
+class Car extends GameObject {
+    constructor() {
+        super();
+    }
     Init(x,y, colour) {
         this.xPos = x;
         this.yPos = y;
@@ -11,11 +14,13 @@ class Car {
         this.HEIGHT = 40;
         this.MAX_SPEED = 10;
         this.JUMP_FORCE = 10;
+        this.SLOWDIVISION = 20;
+        this.SLOWCONST = 0.02;
 
         this.colour = colour;
-
+        this.isPlayer = true;
     }
-    Update(leftKey, downKey, rightKey, GRAVITY, slowAfterTime) {
+    Update(upKey, leftKey, downKey, rightKey, GRAVITY) {
         if (leftKey){
             this.xSpeed -= this.ACCELERATION;
         }
@@ -25,11 +30,14 @@ class Car {
         if (rightKey){
             this.xSpeed += this.ACCELERATION;
         }
+        if (upKey && this.canJump) {
+            this.ySpeed -= this.JUMP_FORCE;
+            this.canJump = false;
+        }
+
+        this.SlowAfterTime();
 
         this.ySpeed += GRAVITY;
-
-        this.xSpeed = slowAfterTime(this.xSpeed);
-        this.ySpeed = slowAfterTime(this.ySpeed);
 
         // Clamp car speed
         if (this.xSpeed > this.MAX_SPEED)
@@ -44,7 +52,6 @@ class Car {
         // apply movement due to speed
         this.xPos += this.xSpeed;
         this.yPos += this.ySpeed;
-
     }
 
     Clamp(CANVAS_WIDTH, CANVAS_HEIGHT) {
@@ -70,4 +77,20 @@ class Car {
     Draw(colorRect) {
         colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
     }
+
+    SlowAfterTime() {
+        this.xSpeed -= (this.xSpeed / this.SLOWDIVISION);
+        this.ySpeed -= (this.ySpeed / this.SLOWDIVISION);
+
+        if (this.xSpeed > 0)
+            this.xSpeed -= this.SLOWCONST;
+        else if (this.xSpeed < 0)
+            this.xSpeed += this.SLOWCONST;
+
+        if (this.ySpeed > 0)
+            this.ySpeed -= this.SLOWCONST;
+        else if (this.ySpeed < 0)
+            this.ySpeed += this.SLOWCONST;
+    }
+
 }

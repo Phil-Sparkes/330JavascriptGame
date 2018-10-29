@@ -1,4 +1,7 @@
-class Ball {
+class Ball  extends GameObject {
+    constructor() {
+        super();
+    }
     Init(x,y) {
         this.xPos = 0;
         this.yPos = 0;
@@ -11,6 +14,10 @@ class Ball {
 
         this.RADIUS = 10;
         this.MAX_SPEED = 15;
+        this.SLOWDIVISION = 100;
+        this.SLOWCONST = 0.02;
+
+        this.isPlayer = false;
     }
     Clamp(CANVAS_WIDTH, CANVAS_HEIGHT, score) {
         // clamp ball position
@@ -33,14 +40,12 @@ class Ball {
         }
         return score;
     }
-    Update(GRAVITY, slowAfterTime) {
+    Update(GRAVITY) {
+
+        this.SlowAfterTime();
 
         // apply gravity
         this.ySpeed += GRAVITY;
-
-        // slow after time
-        this.xSpeed = slowAfterTime(this.xSpeed);
-        this.ySpeed = slowAfterTime(this.ySpeed);
 
         // clamp to max speed
         if (this.xSpeed >  this.MAX_SPEED)
@@ -55,8 +60,24 @@ class Ball {
         // apply movement
         this.xPos += this.xSpeed;
         this.yPos += this.ySpeed;
+
     }
     Draw(colorCircle) {
         colorCircle(this.xPos, this.yPos, this.RADIUS, 'black');
+    }
+
+    SlowAfterTime() {
+        this.xSpeed -= (this.xSpeed / this.SLOWDIVISION);
+        this.ySpeed -= (this.ySpeed / this.SLOWDIVISION);
+
+        if (this.xSpeed > 0)
+            this.xSpeed -= this.SLOWCONST;
+        else if (this.xSpeed < 0)
+            this.xSpeed += this.SLOWCONST;
+
+        if (this.ySpeed > 0)
+            this.ySpeed -= this.SLOWCONST;
+        else if (this.ySpeed < 0)
+            this.ySpeed += this.SLOWCONST;
     }
 }
