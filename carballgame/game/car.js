@@ -2,7 +2,7 @@ class Car extends GameObject {
     constructor() {
         super();
     }
-    Init(x,y, colour) {
+    init(x,y, colour) {
         this.xPos = x;
         this.yPos = y;
         this.xSpeed = 0;
@@ -19,23 +19,34 @@ class Car extends GameObject {
 
         this.colour = colour;
         this.isPlayer = true;
+
+        this.upKey;
+        this.leftKey;
+        this.downKey;
+        this.rightKey;
     }
-    Update(upKey, leftKey, downKey, rightKey, GRAVITY) {
-        if (leftKey){
+    updateInput(upKey, leftKey, downKey, rightKey) {
+        this.upKey = upKey;
+        this.leftKey = leftKey;
+        this.downKey = downKey;
+        this.rightKey = rightKey;
+    }
+    update() {
+        if (this.leftKey){
             this.xSpeed -= this.ACCELERATION;
         }
-        if (downKey){
+        if (this.downKey){
             this.ySpeed += this.ACCELERATION;
         }
-        if (rightKey){
+        if (this.rightKey){
             this.xSpeed += this.ACCELERATION;
         }
-        if (upKey && this.canJump) {
+        if (this.upKey && this.canJump) {
             this.ySpeed -= this.JUMP_FORCE;
             this.canJump = false;
         }
 
-        this.SlowAfterTime();
+        this.slowAfterTime();
 
         this.ySpeed += GRAVITY;
 
@@ -54,7 +65,7 @@ class Car extends GameObject {
         this.yPos += this.ySpeed;
     }
 
-    Clamp(CANVAS_WIDTH, CANVAS_HEIGHT) {
+    clamp() {
         // clamp car position
         if (this.xPos < 0) {
             this.xPos = 0;
@@ -74,11 +85,11 @@ class Car extends GameObject {
             this.canJump = true;
         }
     }
-    Draw(colorRect) {
+    draw(colorRect) {
         colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
     }
 
-    SlowAfterTime() {
+    slowAfterTime() {
         this.xSpeed -= (this.xSpeed / this.SLOWDIVISION);
         this.ySpeed -= (this.ySpeed / this.SLOWDIVISION);
 

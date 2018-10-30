@@ -13,18 +13,18 @@ class GameObject {
         this.SLOWDIVISION = 0;
         this.SLOWCONST = 0;
     }
-    Init() {
+    init() {
 
     }
-    Update() {
+    update() {
     }
 
-    Clamp(CANVAS_WIDTH, CANVAS_HEIGHT) {
+    clamp() {
 
     }
-    SlowAfterTime() {
+    slowAfterTime() {
 
     }
-    Draw() {
+    draw() {
     }
 }

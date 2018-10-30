@@ -2,7 +2,7 @@ class Ball  extends GameObject {
     constructor() {
         super();
     }
-    Init(x,y) {
+    init(x,y, score) {
         this.xPos = 0;
         this.yPos = 0;
 
@@ -12,35 +12,36 @@ class Ball  extends GameObject {
         this.xSpeed = 0;
         this.ySpeed = 0;
 
-        this.RADIUS = 10;
+        this.WIDTH = 20;
+        this.HEIGHT = 20;
         this.MAX_SPEED = 15;
         this.SLOWDIVISION = 100;
         this.SLOWCONST = 0.02;
 
         this.isPlayer = false;
+        this.score = score;
     }
-    Clamp(CANVAS_WIDTH, CANVAS_HEIGHT, score) {
+    clamp() {
         // clamp ball position
         if (this.xPos < 0) {
             this.xSpeed = -this.xSpeed;
             this.xPos = 0;
         }
-        else if (this.xPos > CANVAS_WIDTH - this.RADIUS) {
+        else if (this.xPos > CANVAS_WIDTH - this.WIDTH) {
             this.xSpeed = -this.xSpeed;
-            this.xPos = CANVAS_WIDTH - this.RADIUS;
+            this.xPos = CANVAS_WIDTH - this.WIDTH;
         }
         if (this.yPos < 0) {
             this.ySpeed = -this.ySpeed;
             this.yPos = 0;
         }
-        else if (this.yPos > CANVAS_HEIGHT - this.RADIUS) {
+        else if (this.yPos > CANVAS_HEIGHT - this.HEIGHT) {
             this.ySpeed = -this.ySpeed;
-            this.yPos = CANVAS_HEIGHT - this.RADIUS;
-            score = 0;
+            this.yPos = CANVAS_HEIGHT - this.HEIGHT;
+            this.score.hitFloor();
         }
-        return score;
     }
-    Update(GRAVITY) {
+    update() {
 
         this.SlowAfterTime();
 
@@ -62,8 +63,8 @@ class Ball  extends GameObject {
         this.yPos += this.ySpeed;
 
     }
-    Draw(colorCircle) {
-        colorCircle(this.xPos, this.yPos, this.RADIUS, 'black');
+    draw(colorRect) {
+        colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
     }
 
     SlowAfterTime() {
