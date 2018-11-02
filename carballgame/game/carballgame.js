@@ -2,6 +2,7 @@ const CANVAS_HEIGHT = 600;
 const CANVAS_WIDTH  = 800;
 
 const GRAVITY    = 0.3;
+var gameMode = "dodgeBall";
 
 class CarBallGame {
 
@@ -14,7 +15,11 @@ class CarBallGame {
 
         var player1;
         var player2;
+
         var theBall;
+        var theBall2;
+
+        var net;
         var gameObjects = [];
 
         var score;
@@ -22,10 +27,17 @@ class CarBallGame {
         var i;
         var x;
 
+
         window.onload = function () {
             //Init input and score
             input = new Input;
             score = new Score;
+            switch (gameMode) {
+                case "volleyBall":
+                net = new Net;
+                gameObjects.push(net);
+                break;
+            }
 
             //Init players and ball
             player1 = new Car;
@@ -36,10 +48,22 @@ class CarBallGame {
             player2.init(CANVAS_WIDTH - 80 ,CANVAS_HEIGHT, 'blue');
             gameObjects.push(player2);
 
-            theBall = new Ball;
-            theBall.init(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, score);
-            gameObjects.push(theBall);
-
+            switch (gameMode) {
+                case "keepyUps":
+                case "volleyBall":
+                    theBall = new Ball;
+                    theBall.init(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, score, "black");
+                    gameObjects.push(theBall);
+                    break;
+                case "dodgeBall":
+                    theBall = new Ball;
+                    theBall.init((CANVAS_WIDTH / 2 - CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, player1.colour);
+                    gameObjects.push(theBall);
+                    theBall2 = new Ball;
+                    theBall2.init((CANVAS_WIDTH / 2 + CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, player2.colour);
+                    gameObjects.push(theBall2);
+                    break;
+            }
 
             canvas = document.getElementById('canvas');
             canvasContext = canvas.getContext('2d');
@@ -69,7 +93,7 @@ class CarBallGame {
 
             for (i = 0; i<gameObjects.length; i++) {
 
-                // Updatde
+                // Update
                 gameObjects[i].update();
 
                 // check collisions
@@ -100,15 +124,41 @@ class CarBallGame {
             angleX = (object1.xPos + object1.WIDTH  / 2) - (object2.xPos + object2.WIDTH  / 2);
             angleY = (object1.yPos + object1.HEIGHT / 2) - (object2.yPos + object2.HEIGHT / 2);
 
-            if (object1.isPlayer && !object2.isPlayer) {
-                object2.xSpeed = -angleX;
-                object2.ySpeed = -angleY;
-                score.increment();
-            }
-            else if (!object1.isPlayer && object2.isPlayer) {
+            if (object1.isBall && !object2.isBall) {
                 object1.xSpeed = angleX;
                 object1.ySpeed = angleY;
-                score.increment();
+                score.playerHitBall();
+                switch (gameMode) {
+                    case "dodgeBall":
+                        if (!(object1.colour === object2.colour)) {
+                            object1.reset(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+                            if (object1.colour === "red") {
+                                score.P1Score++
+                            }
+                            else {
+                                score.P2Score++
+                            }
+                        }
+                        break;
+                }
+            }
+            else if (!object1.isBall && object2.isBall) {
+                object2.xSpeed = -angleX;
+                object2.ySpeed = -angleY;
+                score.playerHitBall();
+                switch (gameMode) {
+                    case "dodgeBall":
+                        if (!(object1.colour === object2.colour)) {
+                            object2.reset(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+                            if (object2.colour === "red") {
+                                score.P1Score++
+                            }
+                            else {
+                                score.P2Score++
+                            }
+                        }
+                        break;
+                }
             }
             else {
                 object2.xSpeed = -angleX;

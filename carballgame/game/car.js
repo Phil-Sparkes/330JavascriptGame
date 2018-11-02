@@ -18,7 +18,7 @@ class Car extends GameObject {
         this.SLOWCONST = 0.02;
 
         this.colour = colour;
-        this.isPlayer = true;
+        this.isBall = false;
 
         this.upKey;
         this.leftKey;

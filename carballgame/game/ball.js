@@ -2,11 +2,11 @@ class Ball  extends GameObject {
     constructor() {
         super();
     }
-    init(x,y, score) {
+    init(x,y, score, colour) {
         this.xPos = 0;
         this.yPos = 0;
 
-        this.xPos = x;
+        this.xPos = x +  Math.floor((Math.random() * 10) -5);
         this.yPos = y;
 
         this.xSpeed = 0;
@@ -18,8 +18,9 @@ class Ball  extends GameObject {
         this.SLOWDIVISION = 100;
         this.SLOWCONST = 0.02;
 
-        this.isPlayer = false;
-        this.score = score;
+        this.isBall = true;
+        this.score  = score;
+        this.colour = colour;
     }
     clamp() {
         // clamp ball position
@@ -38,7 +39,22 @@ class Ball  extends GameObject {
         else if (this.yPos > CANVAS_HEIGHT - this.HEIGHT) {
             this.ySpeed = -this.ySpeed;
             this.yPos = CANVAS_HEIGHT - this.HEIGHT;
-            this.score.hitFloor();
+
+            switch (gameMode) {
+                case "keepyUps":
+                    this.score.ballHitFloor(true);
+                    break;
+                case "volleyBall":
+                    if (this.xPos > CANVAS_WIDTH/2) {
+                        this.score.ballHitFloor(true);
+                        this.reset((CANVAS_WIDTH/2 + CANVAS_WIDTH/4), CANVAS_HEIGHT/2);
+                    }
+                    else {
+                        this.score.ballHitFloor(false);
+                        this.reset((CANVAS_WIDTH/2 - CANVAS_WIDTH/4), CANVAS_HEIGHT/2);
+                    }
+                    break;
+            }
         }
     }
     update() {
@@ -63,9 +79,16 @@ class Ball  extends GameObject {
         this.yPos += this.ySpeed;
 
     }
+    reset(x, y) {
+        this.xPos =  x +  Math.floor((Math.random() * 10) -5);
+        this.yPos = y;
+        this.xSpeed = 0;
+        this.ySpeed = -10;
+    }
     draw(colorRect) {
         colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
     }
+
 
     SlowAfterTime() {
         this.xSpeed -= (this.xSpeed / this.SLOWDIVISION);
