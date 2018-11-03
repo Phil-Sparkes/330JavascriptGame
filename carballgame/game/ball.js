@@ -85,7 +85,7 @@ class Ball  extends GameObject {
         this.xSpeed = 0;
         this.ySpeed = -10;
     }
-    draw(colorRect) {
+    draw() {
         colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
     }
 

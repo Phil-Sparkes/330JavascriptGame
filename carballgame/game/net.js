@@ -8,7 +8,7 @@ class Net  extends GameObject {
         this.colour = "black";
         this.isBall = false;
     }
-    draw(colourRect) {
-        colourRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
+    draw() {
+        colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
     }
 }

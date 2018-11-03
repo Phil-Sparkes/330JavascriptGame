@@ -19,16 +19,11 @@ class Car extends GameObject {
 
         this.colour = colour;
         this.isBall = false;
-
-        this.upKey;
-        this.leftKey;
-        this.downKey;
-        this.rightKey;
     }
     updateInput(upKey, leftKey, downKey, rightKey) {
-        this.upKey = upKey;
-        this.leftKey = leftKey;
-        this.downKey = downKey;
+        this.upKey    = upKey;
+        this.leftKey  = leftKey;
+        this.downKey  = downKey;
         this.rightKey = rightKey;
     }
     update() {
@@ -85,7 +80,7 @@ class Car extends GameObject {
             this.canJump = true;
         }
     }
-    draw(colorRect) {
+    draw() {
         colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);
     }
 

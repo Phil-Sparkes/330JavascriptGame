@@ -17,8 +17,8 @@ class GameObject {
 
     }
     update() {
-    }
 
+    }
     clamp() {
 
     }
@@ -26,5 +26,6 @@ class GameObject {
 
     }
     draw() {
+
     }
 }

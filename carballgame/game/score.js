@@ -4,6 +4,7 @@ class Score {
         this.P1Score = 0;
         this.P2Score = 0;
         this.highScore = 0;
+        this.scoreToWin = 7;
 
         this.scoreXPos = CANVAS_WIDTH / 2;
         this.scoreYPos = 75;
@@ -20,10 +21,17 @@ class Score {
 
     }
 
+    checkForWin() {
+        if (this.P1Score >= this.scoreToWin || this.P2Score >= this.scoreToWin) {
+            gameMode = "gameOver";
+        }
+    }
+
     playerHitBall() {
         switch (gameMode) {
             case "keepyUps":
                 this.score++;
+                this.update();
                 break;
         }
     }
@@ -40,6 +48,7 @@ class Score {
                 else {
                     this.P2Score++;
                 }
+                this.checkForWin();
                 break;
         }
     }
@@ -50,7 +59,7 @@ class Score {
             this.highScore = this.score;
     }
 
-    draw(displayText) {
+    draw() {
         // Draw text
         switch (gameMode) {
             case "keepyUps":
@@ -59,9 +68,16 @@ class Score {
                 break;
             case "volleyBall":
             case "dodgeBall":
+            case "gameOver":
                 displayText("P1: " + this.P1Score.toFixed(0), this.scoreXPos - 300, this.scoreYPos, this.p1Colour);
                 displayText("P2: " + this.P2Score.toFixed(0), this.scoreXPos + 300, this.scoreYPos, this.p2Colour);
                 break;
         }
+    }
+    reset() {
+        this.score = 0;
+        this.P1Score = 0;
+        this.P2Score = 0;
+        this.highScore = 0;
     }
 }
