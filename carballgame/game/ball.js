@@ -40,6 +40,7 @@ class Ball  extends GameObject {
             this.ySpeed = -this.ySpeed;
             this.yPos = CANVAS_HEIGHT - this.HEIGHT;
 
+            // check if ball hits floor
             switch (gameMode) {
                 case "keepyUps":
                     this.score.ballHitFloor(true);
@@ -53,7 +54,7 @@ class Ball  extends GameObject {
                         this.score.ballHitFloor(false);
                         this.reset((CANVAS_WIDTH/2 - CANVAS_WIDTH/4), CANVAS_HEIGHT/2);
                     }
-                    break;
+                break;
             }
         }
     }

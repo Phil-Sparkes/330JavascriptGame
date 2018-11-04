@@ -19,18 +19,13 @@ class Car extends GameObject {
 
         this.colour = colour;
         this.isBall = false;
+        this.isPlayer = true;
 
         this.upKey    = upKey;
         this.leftKey  = leftKey;
         this.downKey  = downKey;
         this.rightKey = rightKey;
     }
-    // updateInput(upKey, leftKey, downKey, rightKey) {
-    //     this.upKey    = upKey;
-    //     this.leftKey  = leftKey;
-    //     this.downKey  = downKey;
-    //     this.rightKey = rightKey;
-    // }
     update() {
         if (input.keyDict[this.leftKey]){
             this.xSpeed -= this.ACCELERATION;

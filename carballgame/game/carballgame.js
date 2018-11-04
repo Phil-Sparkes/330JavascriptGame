@@ -2,8 +2,10 @@ const CANVAS_HEIGHT = 600;
 const CANVAS_WIDTH  = 800;
 const FRAMES_PER_SECOND = 60;
 const GRAVITY    = 0.3;
+const TEAM1COLOUR = "red";
+const TEAM2COLOUR = "blue";
 
-let gameMode = "keepyUps";
+let gameMode = "null";
 let canvasContext;
 
 let input = new Input();
@@ -18,6 +20,8 @@ let net;
 
 let gameObjects = [];
 
+let backgroundImage = new Image();
+
 class CarBallGame {
     Run() {
         playerCount = 2;
@@ -28,6 +32,17 @@ class CarBallGame {
         this.canvas = document.getElementById('canvas');
         canvasContext = this.canvas.getContext('2d');
 
+        make_background();
+
+        function make_background()
+        {
+            backgroundImage.src = 'images/background.png';
+            backgroundImage.onload = function(){
+                canvasContext.drawImage(backgroundImage, 0, 0);
+            }
+        }
+
+        // main loop
         setInterval(function () {
             CarBallGame.moveEverything();
             CarBallGame.drawEverything();
@@ -38,49 +53,57 @@ class CarBallGame {
     }
 
     static init() {
+        // Reset score and game objects
         score.reset();
         gameObjects = [];
 
-        //Init players and ball
-
+        // Initialise players
         player = new Car();
-        player.init(40 ,CANVAS_HEIGHT, 'red', KEYCODE_w, KEYCODE_a, KEYCODE_s, KEYCODE_d);
+        player.init(40 ,CANVAS_HEIGHT, TEAM1COLOUR, KEYCODE_w, KEYCODE_a, KEYCODE_s, KEYCODE_d);
         gameObjects.push(player);
         if (playerCount >= 2) {
             player = new Car();
-            player.init(CANVAS_WIDTH - 80, CANVAS_HEIGHT, 'blue', KEYCODE_up_arrow, KEYCODE_left_arrow, KEYCODE_down_arrow, KEYCODE_right_arrow);
+            player.init(CANVAS_WIDTH - 80, CANVAS_HEIGHT, TEAM2COLOUR, KEYCODE_up_arrow, KEYCODE_left_arrow, KEYCODE_down_arrow, KEYCODE_right_arrow);
             gameObjects.push(player);
         }
         if (playerCount >= 3) {
             player = new Car();
-            player.init(100, CANVAS_HEIGHT, 'red', KEYCODE_i, KEYCODE_j, KEYCODE_k, KEYCODE_l);
+            player.init(100, CANVAS_HEIGHT, TEAM1COLOUR, KEYCODE_i, KEYCODE_j, KEYCODE_k, KEYCODE_l);
             gameObjects.push(player);
         }
         if (playerCount >= 4) {
             player = new Car();
-            player.init(CANVAS_WIDTH - 140, CANVAS_HEIGHT, 'blue', KEYCODE_numpad_8, KEYCODE_numpad_4, KEYCODE_numpad_5, KEYCODE_numpad_6);
+            player.init(CANVAS_WIDTH - 140, CANVAS_HEIGHT, TEAM2COLOUR, KEYCODE_numpad_8, KEYCODE_numpad_4, KEYCODE_numpad_5, KEYCODE_numpad_6);
             gameObjects.push(player);
         }
 
+        // Initialise other game objects depending on game mode
         switch (gameMode) {
+            case "footBall":
+                net = new Net;
+                net.init(0, TEAM1COLOUR);
+                gameObjects.push(net);
+                net = new Net;
+                net.init(CANVAS_WIDTH -20, TEAM2COLOUR);
+                gameObjects.push(net);
+                ball = new Ball();
+                ball.init(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, score, "black");
+                gameObjects.push(ball);
+                break;
             case "volleyBall":
                 net = new Net;
                 gameObjects.push(net);
-                break;
-        }
-        switch (gameMode) {
             case "keepyUps":
-            case "volleyBall":
                 ball = new Ball();
                 ball.init(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, score, "black");
                 gameObjects.push(ball);
                 break;
             case "dodgeBall":
                 ball = new Ball();
-                ball.init((CANVAS_WIDTH / 2 - CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, "red");
+                ball.init((CANVAS_WIDTH / 2 - CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, TEAM1COLOUR);
                 gameObjects.push(ball);
                 ball = new Ball();
-                ball.init((CANVAS_WIDTH / 2 + CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, "blue");
+                ball.init((CANVAS_WIDTH / 2 + CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, TEAM2COLOUR);
                 gameObjects.push(ball);
                 break;
         }
@@ -108,10 +131,11 @@ class CarBallGame {
     static moveEverything() {
         let i;
         let x;
+        // Loop through all game objects
         for (i = 0; i<gameObjects.length; i++) {
             // Update
             gameObjects[i].update();
-            // check collisions
+            // check collisions between all objects
             for (x = i + 1; x < gameObjects.length; x++) {
                 if (CarBallGame.checkCollision(gameObjects[i], gameObjects[x]))
                     CarBallGame.collisionResult(gameObjects[i], gameObjects[x]);
@@ -121,7 +145,7 @@ class CarBallGame {
         }
     }
 
-    // https://stackoverflow.com/questions/2440377/javascript-collision-detection
+    // Collision detection found at https://stackoverflow.com/questions/2440377/javascript-collision-detection
     static checkCollision(a, b) {
         return !(
             ((a.yPos + a.HEIGHT) < (b.yPos)) ||
@@ -135,46 +159,24 @@ class CarBallGame {
         let angleX;
         let angleY;
 
+        // calculate angle objects will travel
         angleX = (object1.xPos + object1.WIDTH  / 2) - (object2.xPos + object2.WIDTH  / 2);
         angleY = (object1.yPos + object1.HEIGHT / 2) - (object2.yPos + object2.HEIGHT / 2);
 
+
+        // check if only one of the objects is a ball
         if (object1.isBall && !object2.isBall) {
             object1.xSpeed = angleX;
             object1.ySpeed = angleY;
-            score.playerHitBall();
-            switch (gameMode) {
-                case "dodgeBall":
-                    if (!(object1.colour === object2.colour)) {
-                        object1.reset(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
-                        if (object1.colour === "red") {
-                            score.P1Score++
-                        }
-                        else {
-                            score.P2Score++
-                        }
-                    }
-                    break;
-            }
+            score.ballHitObject(object1, object2);
         }
         else if (!object1.isBall && object2.isBall) {
             object2.xSpeed = -angleX;
             object2.ySpeed = -angleY;
-            score.playerHitBall();
-            switch (gameMode) {
-                case "dodgeBall":
-                    if (!(object1.colour === object2.colour)) {
-                        object2.reset(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
-                        if (object2.colour === "red") {
-                            score.P1Score++
-                        }
-                        else {
-                            score.P2Score++
-                        }
-                    }
-                    break;
+            score.ballHitObject(object2, object1);
             }
-        }
         else {
+            // otherwise both objects are acted upon
             object2.xSpeed = -angleX;
             object2.ySpeed = -angleY;
             object1.xSpeed = angleX;
@@ -182,10 +184,11 @@ class CarBallGame {
         }
     }
 
+
     static drawEverything() {
         let i;
         // Draw Background
-        colorRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, 'lightgreen');
+        canvasContext.drawImage(backgroundImage, 0, 0);
         // Draw Objects
         for (i=0; i<gameObjects.length; i++) {
             gameObjects[i].draw();
