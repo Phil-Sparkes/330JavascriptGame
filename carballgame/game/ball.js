@@ -1,22 +1,21 @@
 class Ball  extends GameObject {
     constructor() {
         super();
-    }
-    init(x,y, score, colour) {
-        this.xPos = 0;
-        this.yPos = 0;
-
-        this.xPos = x +  Math.floor((Math.random() * 10) -5);
-        this.yPos = y;
-
-        this.xSpeed = 0;
-        this.ySpeed = 0;
-
         this.WIDTH = 20;
         this.HEIGHT = 20;
         this.MAX_SPEED = 15;
         this.SLOWDIVISION = 100;
         this.SLOWCONST = 0.02;
+    }
+    init(x,y, score, colour) {
+        this.xPos = 0;
+        this.yPos = 0;
+
+        this.xPos = x - this.WIDTH/2 + Math.floor((Math.random() * 10) -5);
+        this.yPos = y;
+
+        this.xSpeed = 0;
+        this.ySpeed = 0;
 
         this.isBall = true;
         this.score  = score;
@@ -46,13 +45,13 @@ class Ball  extends GameObject {
                     this.score.ballHitFloor(true);
                     break;
                 case "volleyBall":
-                    if (this.xPos > CANVAS_WIDTH/2) {
+                    if (this.xPos > CANVAS_XCENTER) {
                         this.score.ballHitFloor(true);
-                        this.reset((CANVAS_WIDTH/2 + CANVAS_WIDTH/4), CANVAS_HEIGHT/2);
+                        this.reset((CANVAS_XCENTER + CANVAS_WIDTH/4), CANVAS_YCENTER);
                     }
                     else {
                         this.score.ballHitFloor(false);
-                        this.reset((CANVAS_WIDTH/2 - CANVAS_WIDTH/4), CANVAS_HEIGHT/2);
+                        this.reset((CANVAS_XCENTER - CANVAS_WIDTH/4), CANVAS_YCENTER);
                     }
                 break;
             }
@@ -81,7 +80,7 @@ class Ball  extends GameObject {
 
     }
     reset(x, y) {
-        this.xPos =  x +  Math.floor((Math.random() * 10) -5);
+        this.xPos =  x - this.WIDTH/2 +  Math.floor((Math.random() * 10) -5);
         this.yPos = y;
         this.xSpeed = 0;
         this.ySpeed = -10;

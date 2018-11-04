@@ -1,16 +1,20 @@
 const CANVAS_HEIGHT = 600;
 const CANVAS_WIDTH  = 800;
+const CANVAS_YCENTER = CANVAS_HEIGHT/2;
+const CANVAS_XCENTER  = CANVAS_WIDTH/2;
+
+
 const FRAMES_PER_SECOND = 60;
 const GRAVITY    = 0.3;
 const TEAM1COLOUR = "red";
 const TEAM2COLOUR = "blue";
+const DEFAULTCOLOUR = "black";
 
-let gameMode = "null";
+let gameMode = "startScreen";
 let canvasContext;
 
 let input = new Input();
 let score = new Score();
-let menu  = new Menu();
 
 let playerCount;
 
@@ -57,23 +61,24 @@ class CarBallGame {
         score.reset();
         gameObjects = [];
 
+        let playerDisplacement = 50;
         // Initialise players
         player = new Car();
-        player.init(40 ,CANVAS_HEIGHT, TEAM1COLOUR, KEYCODE_w, KEYCODE_a, KEYCODE_s, KEYCODE_d);
+        player.init(playerDisplacement ,CANVAS_HEIGHT, TEAM1COLOUR, KEYCODE_w, KEYCODE_a, KEYCODE_s, KEYCODE_d);
         gameObjects.push(player);
         if (playerCount >= 2) {
             player = new Car();
-            player.init(CANVAS_WIDTH - 80, CANVAS_HEIGHT, TEAM2COLOUR, KEYCODE_up_arrow, KEYCODE_left_arrow, KEYCODE_down_arrow, KEYCODE_right_arrow);
+            player.init(CANVAS_WIDTH - player.WIDTH - playerDisplacement, CANVAS_HEIGHT, TEAM2COLOUR, KEYCODE_up_arrow, KEYCODE_left_arrow, KEYCODE_down_arrow, KEYCODE_right_arrow);
             gameObjects.push(player);
         }
         if (playerCount >= 3) {
             player = new Car();
-            player.init(100, CANVAS_HEIGHT, TEAM1COLOUR, KEYCODE_i, KEYCODE_j, KEYCODE_k, KEYCODE_l);
+            player.init(playerDisplacement*2, CANVAS_HEIGHT, TEAM1COLOUR, KEYCODE_i, KEYCODE_j, KEYCODE_k, KEYCODE_l);
             gameObjects.push(player);
         }
         if (playerCount >= 4) {
             player = new Car();
-            player.init(CANVAS_WIDTH - 140, CANVAS_HEIGHT, TEAM2COLOUR, KEYCODE_numpad_8, KEYCODE_numpad_4, KEYCODE_numpad_5, KEYCODE_numpad_6);
+            player.init(CANVAS_WIDTH  - player.WIDTH - playerDisplacement*2, CANVAS_HEIGHT, TEAM2COLOUR, KEYCODE_numpad_8, KEYCODE_numpad_4, KEYCODE_numpad_5, KEYCODE_numpad_6);
             gameObjects.push(player);
         }
 
@@ -84,26 +89,28 @@ class CarBallGame {
                 net.init(0, TEAM1COLOUR);
                 gameObjects.push(net);
                 net = new Net;
-                net.init(CANVAS_WIDTH -20, TEAM2COLOUR);
+                net.init(CANVAS_WIDTH - net.WIDTH, TEAM2COLOUR);
                 gameObjects.push(net);
                 ball = new Ball();
-                ball.init(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, score, "black");
+                ball.init(CANVAS_XCENTER, CANVAS_YCENTER, score, DEFAULTCOLOUR);
                 gameObjects.push(ball);
                 break;
             case "volleyBall":
                 net = new Net;
+                net.init(CANVAS_XCENTER - net.WIDTH/2, DEFAULTCOLOUR);
                 gameObjects.push(net);
             case "keepyUps":
                 ball = new Ball();
-                ball.init(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, score, "black");
+                ball.init(CANVAS_XCENTER, CANVAS_YCENTER, score, DEFAULTCOLOUR);
                 gameObjects.push(ball);
                 break;
             case "dodgeBall":
+                let ballXDisplacement = 200;
                 ball = new Ball();
-                ball.init((CANVAS_WIDTH / 2 - CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, TEAM1COLOUR);
+                ball.init((CANVAS_XCENTER - ballXDisplacement), CANVAS_YCENTER, score, TEAM1COLOUR);
                 gameObjects.push(ball);
                 ball = new Ball();
-                ball.init((CANVAS_WIDTH / 2 + CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, TEAM2COLOUR);
+                ball.init((CANVAS_XCENTER + ballXDisplacement), CANVAS_YCENTER, score, TEAM2COLOUR);
                 gameObjects.push(ball);
                 break;
         }
@@ -117,12 +124,13 @@ class CarBallGame {
         input.onKeyUp(event);
     }
 
-    buttonClick(button, gameModeButton) {
+    static buttonClick(buttonValue, gameModeButton) {
         if (gameModeButton) {
-            gameMode = button;
+            gameMode = buttonValue;
         }
         else {
-            playerCount = button;
+            playerCount = buttonValue;
+            gameMode = "startScreen";
         }
         CarBallGame.init();
     }
@@ -196,8 +204,11 @@ class CarBallGame {
         // Draw Score
         score.draw();
         switch (gameMode) {
+            case "startScreen":
+                TextToScreen.drawControls(playerCount);
+                break;
             case "gameOver":
-                menu.drawGameOver();
+                TextToScreen.drawGameOver();
                 break;
         }
     }

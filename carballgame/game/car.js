@@ -1,14 +1,6 @@
 class Car extends GameObject {
     constructor() {
         super();
-    }
-    init(x,y, colour, upKey, leftKey, downKey, rightKey) {
-        this.xPos = x;
-        this.yPos = y;
-        this.xSpeed = 0;
-        this.ySpeed = 0;
-        this.canJump = true;
-
         this.ACCELERATION = 1;
         this.WIDTH = 40;
         this.HEIGHT = 40;
@@ -16,6 +8,13 @@ class Car extends GameObject {
         this.JUMP_FORCE = 10;
         this.SLOWDIVISION = 20;
         this.SLOWCONST = 0.02;
+    }
+    init(x,y, colour, upKey, leftKey, downKey, rightKey) {
+        this.xPos = x;
+        this.yPos = y;
+        this.xSpeed = 0;
+        this.ySpeed = 0;
+        this.canJump = true;
 
         this.colour = colour;
         this.isBall = false;

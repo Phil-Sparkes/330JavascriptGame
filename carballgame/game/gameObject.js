@@ -8,10 +8,7 @@ class GameObject {
         this.WIDTH = 0;
         this.HEIGHT = 0;
 
-        this.colour = 'black';
-
-        this.SLOWDIVISION = 0;
-        this.SLOWCONST = 0;
+        this.colour = DEFAULTCOLOUR;
     }
     init() {
 

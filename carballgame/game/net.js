@@ -3,9 +3,9 @@ class Net  extends GameObject {
         super();
         this.WIDTH = 20;
         this.HEIGHT = 150;
-        this.xPos = CANVAS_WIDTH/2;
+        this.xPos = CANVAS_XCENTER;
         this.yPos = CANVAS_HEIGHT - this.HEIGHT;
-        this.colour = "black";
+        this.colour = DEFAULTCOLOUR;
         this.isBall = false;
         this.isPlayer = false;
     }

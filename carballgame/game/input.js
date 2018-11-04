@@ -18,8 +18,6 @@ const KEYCODE_numpad_4    =100;
 const KEYCODE_numpad_5    =101;
 const KEYCODE_numpad_6    =102;
 
-const KEYCODE_escape  =27;
-
 class Input {
     constructor()
     {
