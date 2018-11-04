@@ -3,21 +3,24 @@ const CANVAS_WIDTH  = 800;
 const FRAMES_PER_SECOND = 60;
 const GRAVITY    = 0.3;
 
-let gameMode = "mainMenu";
+let gameMode = "keepyUps";
 let canvasContext;
 
 let input = new Input();
 let score = new Score();
 let menu  = new Menu();
 
-let player1;
-let player2;
-let theBall;
+let playerCount;
+
+let player;
+let ball;
 let net;
+
 let gameObjects = [];
 
 class CarBallGame {
     Run() {
+        playerCount = 2;
         window.onload;
 
         CarBallGame.init();
@@ -28,7 +31,6 @@ class CarBallGame {
         setInterval(function () {
             CarBallGame.moveEverything();
             CarBallGame.drawEverything();
-            CarBallGame.checkGameModeChange();
         }, 1000 / FRAMES_PER_SECOND);
 
         window.addEventListener("keydown", CarBallGame.onKeyDown);
@@ -40,13 +42,25 @@ class CarBallGame {
         gameObjects = [];
 
         //Init players and ball
-        player1 = new Car();
-        player1.init(40 ,CANVAS_HEIGHT, 'red');
-        gameObjects.push(player1);
 
-        player2 = new Car();
-        player2.init(CANVAS_WIDTH - 80 ,CANVAS_HEIGHT, 'blue');
-        gameObjects.push(player2);
+        player = new Car();
+        player.init(40 ,CANVAS_HEIGHT, 'red', KEYCODE_w, KEYCODE_a, KEYCODE_s, KEYCODE_d);
+        gameObjects.push(player);
+        if (playerCount >= 2) {
+            player = new Car();
+            player.init(CANVAS_WIDTH - 80, CANVAS_HEIGHT, 'blue', KEYCODE_up_arrow, KEYCODE_left_arrow, KEYCODE_down_arrow, KEYCODE_right_arrow);
+            gameObjects.push(player);
+        }
+        if (playerCount >= 3) {
+            player = new Car();
+            player.init(100, CANVAS_HEIGHT, 'red', KEYCODE_i, KEYCODE_j, KEYCODE_k, KEYCODE_l);
+            gameObjects.push(player);
+        }
+        if (playerCount >= 4) {
+            player = new Car();
+            player.init(CANVAS_WIDTH - 140, CANVAS_HEIGHT, 'blue', KEYCODE_numpad_8, KEYCODE_numpad_4, KEYCODE_numpad_5, KEYCODE_numpad_6);
+            gameObjects.push(player);
+        }
 
         switch (gameMode) {
             case "volleyBall":
@@ -57,53 +71,39 @@ class CarBallGame {
         switch (gameMode) {
             case "keepyUps":
             case "volleyBall":
-                theBall = new Ball();
-                theBall.init(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, score, "black");
-                gameObjects.push(theBall);
+                ball = new Ball();
+                ball.init(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, score, "black");
+                gameObjects.push(ball);
                 break;
             case "dodgeBall":
-                theBall = new Ball();
-                theBall.init((CANVAS_WIDTH / 2 - CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, player1.colour);
-                gameObjects.push(theBall);
-                theBall = new Ball();
-                theBall.init((CANVAS_WIDTH / 2 + CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, player2.colour);
-                gameObjects.push(theBall);
+                ball = new Ball();
+                ball.init((CANVAS_WIDTH / 2 - CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, "red");
+                gameObjects.push(ball);
+                ball = new Ball();
+                ball.init((CANVAS_WIDTH / 2 + CANVAS_WIDTH / 4), CANVAS_HEIGHT / 2, score, "blue");
+                gameObjects.push(ball);
                 break;
         }
     }
 
     static onKeyDown(event) {
         input.onKeyDown(event);
-        player1.updateInput(input.keyDict[KEYCODE_w], input.keyDict[KEYCODE_a], input.keyDict[KEYCODE_s], input.keyDict[KEYCODE_d]);
-        player2.updateInput(input.keyDict[KEYCODE_up_arrow], input.keyDict[KEYCODE_left_arrow], input.keyDict[KEYCODE_down_arrow], input.keyDict[KEYCODE_right_arrow]);
     }
 
     static onKeyUp(event) {
         input.onKeyUp(event);
-        player1.updateInput(input.keyDict[KEYCODE_w], input.keyDict[KEYCODE_a], input.keyDict[KEYCODE_s], input.keyDict[KEYCODE_d]);
-        player2.updateInput(input.keyDict[KEYCODE_up_arrow], input.keyDict[KEYCODE_left_arrow], input.keyDict[KEYCODE_down_arrow], input.keyDict[KEYCODE_right_arrow]);
     }
 
-    static checkGameModeChange() {
-        if (gameMode === "mainMenu") {
-            if (input.keyDict[KEYCODE_1]) {
-                gameMode = "volleyBall";
-                CarBallGame.init();
-            }
-            else if (input.keyDict[KEYCODE_2]) {
-                gameMode = "keepyUps";
-                CarBallGame.init();
-            }
-            else if (input.keyDict[KEYCODE_3]) {
-                gameMode = "dodgeBall";
-                CarBallGame.init();
-            }
+    buttonClick(button, gameModeButton) {
+        if (gameModeButton) {
+            gameMode = button;
         }
-        else if (input.keyDict[KEYCODE_escape]) {
-            gameMode = "mainMenu";
-            CarBallGame.init();
+        else {
+            playerCount = button;
         }
+        CarBallGame.init();
     }
+
 
     static moveEverything() {
         let i;
@@ -193,9 +193,6 @@ class CarBallGame {
         // Draw Score
         score.draw();
         switch (gameMode) {
-            case "mainMenu":
-                menu.drawMainMenu();
-                break;
             case "gameOver":
                 menu.drawGameOver();
                 break;

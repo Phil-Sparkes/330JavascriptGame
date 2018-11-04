@@ -2,7 +2,7 @@ class Car extends GameObject {
     constructor() {
         super();
     }
-    init(x,y, colour) {
+    init(x,y, colour, upKey, leftKey, downKey, rightKey) {
         this.xPos = x;
         this.yPos = y;
         this.xSpeed = 0;
@@ -19,24 +19,29 @@ class Car extends GameObject {
 
         this.colour = colour;
         this.isBall = false;
-    }
-    updateInput(upKey, leftKey, downKey, rightKey) {
+
         this.upKey    = upKey;
         this.leftKey  = leftKey;
         this.downKey  = downKey;
         this.rightKey = rightKey;
     }
+    // updateInput(upKey, leftKey, downKey, rightKey) {
+    //     this.upKey    = upKey;
+    //     this.leftKey  = leftKey;
+    //     this.downKey  = downKey;
+    //     this.rightKey = rightKey;
+    // }
     update() {
-        if (this.leftKey){
+        if (input.keyDict[this.leftKey]){
             this.xSpeed -= this.ACCELERATION;
         }
-        if (this.downKey){
+        if (input.keyDict[this.downKey]){
             this.ySpeed += this.ACCELERATION;
         }
-        if (this.rightKey){
+        if (input.keyDict[this.rightKey]){
             this.xSpeed += this.ACCELERATION;
         }
-        if (this.upKey && this.canJump) {
+        if (input.keyDict[this.upKey] && this.canJump) {
             this.ySpeed -= this.JUMP_FORCE;
             this.canJump = false;
         }

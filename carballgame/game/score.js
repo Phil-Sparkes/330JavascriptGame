@@ -17,8 +17,6 @@ class Score {
 
         this.highScoreXPos = CANVAS_WIDTH / 2;
         this.highScoreYPos = 35;
-
-
     }
 
     checkForWin() {
@@ -69,8 +67,8 @@ class Score {
             case "volleyBall":
             case "dodgeBall":
             case "gameOver":
-                displayText("P1: " + this.P1Score.toFixed(0), this.scoreXPos - 300, this.scoreYPos, this.p1Colour);
-                displayText("P2: " + this.P2Score.toFixed(0), this.scoreXPos + 300, this.scoreYPos, this.p2Colour);
+                displayText("Red: " + this.P1Score.toFixed(0), this.scoreXPos - 300, this.scoreYPos, this.p1Colour);
+                displayText("Blue: " + this.P2Score.toFixed(0), this.scoreXPos + 300, this.scoreYPos, this.p2Colour);
                 break;
         }
     }

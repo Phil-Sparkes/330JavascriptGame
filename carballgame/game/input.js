@@ -6,13 +6,19 @@ const KEYCODE_d   =68;
 const KEYCODE_up_arrow    =38;
 const KEYCODE_left_arrow  =37;
 const KEYCODE_down_arrow  =40;
-const KEYCODE_right_arrow     =39;
+const KEYCODE_right_arrow =39;
+
+const KEYCODE_i   =73;
+const KEYCODE_j   =74;
+const KEYCODE_k   =75;
+const KEYCODE_l   =76;
+
+const KEYCODE_numpad_8    =104;
+const KEYCODE_numpad_4    =100;
+const KEYCODE_numpad_5    =101;
+const KEYCODE_numpad_6    =102;
 
 const KEYCODE_escape  =27;
-
-const KEYCODE_1   =49;
-const KEYCODE_2   =50;
-const KEYCODE_3   =51;
 
 class Input {
     constructor()
@@ -29,12 +35,17 @@ class Input {
         this.keyDict[KEYCODE_down_arrow]  = false;
         this.keyDict[KEYCODE_right_arrow] = false;
 
-        this.keyDict[KEYCODE_escape] = false;
+        this.keyDict[KEYCODE_i] = false;
+        this.keyDict[KEYCODE_j] = false;
+        this.keyDict[KEYCODE_k] = false;
+        this.keyDict[KEYCODE_l] = false;
 
-        this.keyDict[KEYCODE_1] = false;
-        this.keyDict[KEYCODE_2] = false;
-        this.keyDict[KEYCODE_3] = false;
+        this.keyDict[KEYCODE_numpad_8] = false;
+        this.keyDict[KEYCODE_numpad_4] = false;
+        this.keyDict[KEYCODE_numpad_5] = false;
+        this.keyDict[KEYCODE_numpad_6] = false;
     }
+
     onKeyDown(event) {
         let key = event.keyCode;
         if (key in this.keyDict) {

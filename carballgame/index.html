@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<body bgcolor="#222222">
+
     <meta charset="UTF-8">
     <title>CarBall</title>
     <script src="game/mainMenu.js"></script>
@@ -13,11 +15,45 @@
     <script src="game/net.js"></script>
     <script src="game/drawStuff.js"></script>
 
+    <style>
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 25px 68px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
 
-</head>
-<body>
-<canvas id="canvas" width="800" height="600"></canvas>
+
+
+
+
+
+<div style="width: 800px; height:600px; margin: 60px auto;">
+    <button onclick="CarBallGameInst.buttonClick(1, false)" class="button">1 Player</button>
+    <button onclick="CarBallGameInst.buttonClick(2, false)" class="button">2 Player</button>
+    <button onclick="CarBallGameInst.buttonClick(3, false)" class="button">3 Player</button>
+    <button onclick="CarBallGameInst.buttonClick(4, false)" class="button">4 Player</button>
+    <canvas id="canvas" style="background:#222222" width="800" height="600"></canvas>
+    <button onclick="CarBallGameInst.buttonClick('volleyBall', true)" class="button">---- VolleyBall ----</button>
+    <button onclick="CarBallGameInst.buttonClick('keepyUps', true)"   class="button">---- Keepy Ups ----</button>
+    <button onclick="CarBallGameInst.buttonClick('dodgeBall', true)"  class="button">---- DodgeBall ----</button>
+
+    <h2 style="color:white"> Controls: </h2>
+    <p style="color:white">  Player1: Arrow keys</p>
+    <p style="color:white">  Player2: WASD</p>
+    <p style="color:white">  Player3: IJKL</p>
+    <p style="color:white">  Player4: Numpad 8456</p>
+
+</div>
 </body>
+</head>
 </html>
 
 
@@ -26,7 +62,7 @@
     document.documentElement.style.overflow = 'hidden';  // firefox, chrome
     document.body.scroll = "no"; // ie only
     document.body.style.padding = 0;
-    document.body.style.margin = 0;
+    document.body.style.margin  = 0;
 
     CarBallGameInst.Run();
 
