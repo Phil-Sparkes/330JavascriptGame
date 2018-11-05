@@ -21,6 +21,7 @@ const KEYCODE_numpad_6    =102;
 class Input {
     constructor()
     {
+        // set up key dictionary
         this.keyDict = {};
 
         this.keyDict[KEYCODE_w] = false;

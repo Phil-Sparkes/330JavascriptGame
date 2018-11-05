@@ -11,6 +11,7 @@ class Ball  extends GameObject {
         this.xPos = 0;
         this.yPos = 0;
 
+        // random deviation to change spawn position slightly
         this.xPos = x - this.WIDTH/2 + Math.floor((Math.random() * 10) -5);
         this.yPos = y;
 
@@ -21,7 +22,7 @@ class Ball  extends GameObject {
         this.colour = colour;
     }
     clamp() {
-        // clamp ball position
+        // clamp ball position to screen
         if (this.xPos < 0) {
             this.xSpeed = -this.xSpeed;
             this.xPos = 0;
@@ -37,17 +38,19 @@ class Ball  extends GameObject {
         else if (this.yPos > CANVAS_HEIGHT - this.HEIGHT) {
             this.ySpeed = -this.ySpeed;
             this.yPos = CANVAS_HEIGHT - this.HEIGHT;
+            // handle hit floor event
             GameModeManager.ballHitFloor(this);
         }
     }
     update() {
 
+        // apply dampening
         this.SlowAfterTime();
 
         // apply gravity
         this.ySpeed += GRAVITY;
 
-        // clamp to max speed
+        // clamp speed to max speed
         if (this.xSpeed >  this.MAX_SPEED)
             this.xSpeed =  this.MAX_SPEED;
         if (this.xSpeed < -this.MAX_SPEED)
@@ -64,9 +67,11 @@ class Ball  extends GameObject {
     }
     reset(x, y) {
         let upwardsForce = -10;
+        // random deviation to change spawn position slightly
         this.xPos =  x - this.WIDTH/2 +  Math.floor((Math.random() * 10) -5);
         this.yPos = y;
         this.xSpeed = 0;
+        // apply upwards force so ball doesn't fall instantly
         this.ySpeed = upwardsForce;
     }
     draw() {
@@ -75,6 +80,7 @@ class Ball  extends GameObject {
 
 
     SlowAfterTime() {
+        // apply dampening
         this.xSpeed -= (this.xSpeed / this.SLOWDIVISION);
         this.ySpeed -= (this.ySpeed / this.SLOWDIVISION);
 

@@ -6,6 +6,7 @@ const CANVAS_XCENTER  = CANVAS_WIDTH/2;
 
 const FRAMES_PER_SECOND = 60;
 const GRAVITY    = 0.3;
+
 const TEAM1COLOUR = "red";
 const TEAM2COLOUR = "blue";
 const DEFAULTCOLOUR = "black";
@@ -33,11 +34,13 @@ class BoxBallGame {
 
         BoxBallGame.init();
 
+        // get canvas
         this.canvas = document.getElementById('canvas');
         canvasContext = this.canvas.getContext('2d');
 
         make_background();
 
+        // load background image
         function make_background()
         {
             backgroundImage.src = 'images/background.png';
@@ -52,6 +55,7 @@ class BoxBallGame {
             BoxBallGame.drawEverything();
         }, 1000 / FRAMES_PER_SECOND);
 
+        // event listeners
         window.addEventListener("keydown", BoxBallGame.onKeyDown);
         window.addEventListener("keyup", BoxBallGame.onKeyUp);
     }
@@ -96,10 +100,12 @@ class BoxBallGame {
 
     static buttonClick(buttonValue, gameModeButton) {
         if (gameModeButton) {
+            // change gamemode to button
             gameMode = buttonValue;
         }
         else {
             playerCount = buttonValue;
+            // reset to start screen
             gameMode = "startScreen";
         }
         BoxBallGame.init();
@@ -123,7 +129,7 @@ class BoxBallGame {
         }
     }
 
-    // Collision detection found at https://stackoverflow.com/questions/2440377/javascript-collision-detection
+    // Collision detection from https://stackoverflow.com/questions/2440377/javascript-collision-detection
     static checkCollision(a, b) {
         return !(
             ((a.yPos + a.HEIGHT) < (b.yPos)) ||

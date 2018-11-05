@@ -26,6 +26,7 @@ class Player extends GameObject {
         this.rightKey = rightKey;
     }
     update() {
+        // get input
         if (input.keyDict[this.leftKey]){
             this.xSpeed -= this.ACCELERATION;
         }
@@ -40,8 +41,10 @@ class Player extends GameObject {
             this.canJump = false;
         }
 
+        // apply dampening
         this.slowAfterTime();
 
+        // Apply gravity
         this.ySpeed += GRAVITY;
 
         // Clamp player speed
@@ -60,7 +63,7 @@ class Player extends GameObject {
     }
 
     clamp() {
-        // clamp player position
+        // clamp player position to screen
         if (this.xPos < 0) {
             this.xPos = 0;
             this.xSpeed = 0;
@@ -76,6 +79,7 @@ class Player extends GameObject {
         else if (this.yPos > CANVAS_HEIGHT - this.HEIGHT) {
             this.yPos = CANVAS_HEIGHT - this.HEIGHT;
             this.ySpeed = 0;
+            // when player is on floor set can jump to true
             this.canJump = true;
         }
     }
@@ -84,6 +88,7 @@ class Player extends GameObject {
     }
 
     slowAfterTime() {
+        // apply dampening
         this.xSpeed -= (this.xSpeed / this.SLOWDIVISION);
         this.ySpeed -= (this.ySpeed / this.SLOWDIVISION);
 
