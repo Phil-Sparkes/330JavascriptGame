@@ -3,17 +3,17 @@
 <head>
 <body bgcolor="#222222">
 <meta charset="UTF-8">
-<title>CarBall</title>
+<title>BoxBall</title>
 <script src="game/textToScreen.js"></script>
 <script src="game/gameObject.js"></script>
 <script src="game/input.js"></script>
 <script src="game/score.js"></script>
-<script src="game/carballgame.js"></script>
+<script src="game/gameModeManager.js"></script>
 <script src="game/car.js"></script>
 <script src="game/ball.js"></script>
 <script src="game/net.js"></script>
 <script src="game/drawTools.js"></script>
-
+<script src="game/boxBallGame.js"></script>
 
 <style>
 .button {
@@ -31,21 +31,20 @@ cursor: pointer;
 }
 </style>
 <div style="width: 800px; height:600px; margin: 60px auto;">
-<button onclick="CarBallGame.buttonClick(1, false)" class="button">1 Player</button>
-<button onclick="CarBallGame.buttonClick(2, false)" class="button">2 Player</button>
-<button onclick="CarBallGame.buttonClick(3, false)" class="button">3 Player</button>
-<button onclick="CarBallGame.buttonClick(4, false)" class="button">4 Player</button>
+<button onclick="BoxBallGame.buttonClick(1, false)" class="button">1 Player</button>
+<button onclick="BoxBallGame.buttonClick(2, false)" class="button">2 Player</button>
+<button onclick="BoxBallGame.buttonClick(3, false)" class="button">3 Player</button>
+<button onclick="BoxBallGame.buttonClick(4, false)" class="button">4 Player</button>
 <canvas id="canvas"  src="images/background.png" width="800" height="600"></canvas>
-<button onclick="CarBallGame.buttonClick('volleyBall', true)" class="button">VolleyBall</button>
-<button onclick="CarBallGame.buttonClick('keepyUps', true)" class="button">Keepy Ups</button>
-<button onclick="CarBallGame.buttonClick('dodgeBall', true)" class="button">DodgeBall</button>
-<button onclick="CarBallGame.buttonClick('footBall', true)" class="button">FootBall</button>
+<button onclick="BoxBallGame.buttonClick('volleyBall', true)" class="button">VolleyBall</button>
+<button onclick="BoxBallGame.buttonClick('keepyUps', true)" class="button">Keepy Ups</button>
+<button onclick="BoxBallGame.buttonClick('dodgeBall', true)" class="button">DodgeBall</button>
+<button onclick="BoxBallGame.buttonClick('footBall', true)" class="button">FootBall</button>
 
 </div>
 </body>
 </head>
 </html>
-
 
 <script>
 
@@ -54,6 +53,6 @@ cursor: pointer;
     document.body.style.padding = 0;
     document.body.style.margin  = 0;
 
-    CarBallGameInst.Run();
+    BoxBallGameInst.Run();
 
 </script>

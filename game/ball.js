@@ -7,7 +7,7 @@ class Ball  extends GameObject {
         this.SLOWDIVISION = 100;
         this.SLOWCONST = 0.02;
     }
-    init(x,y, score, colour) {
+    init(x,y, colour) {
         this.xPos = 0;
         this.yPos = 0;
 
@@ -18,7 +18,6 @@ class Ball  extends GameObject {
         this.ySpeed = 0;
 
         this.isBall = true;
-        this.score  = score;
         this.colour = colour;
     }
     clamp() {
@@ -38,23 +37,7 @@ class Ball  extends GameObject {
         else if (this.yPos > CANVAS_HEIGHT - this.HEIGHT) {
             this.ySpeed = -this.ySpeed;
             this.yPos = CANVAS_HEIGHT - this.HEIGHT;
-
-            // check if ball hits floor
-            switch (gameMode) {
-                case "keepyUps":
-                    this.score.ballHitFloor(true);
-                    break;
-                case "volleyBall":
-                    if (this.xPos > CANVAS_XCENTER) {
-                        this.score.ballHitFloor(true);
-                        this.reset((CANVAS_XCENTER + CANVAS_WIDTH/4), CANVAS_YCENTER);
-                    }
-                    else {
-                        this.score.ballHitFloor(false);
-                        this.reset((CANVAS_XCENTER - CANVAS_WIDTH/4), CANVAS_YCENTER);
-                    }
-                break;
-            }
+            GameModeManager.ballHitFloor(this);
         }
     }
     update() {
@@ -80,10 +63,11 @@ class Ball  extends GameObject {
 
     }
     reset(x, y) {
+        let upwardsForce = -10;
         this.xPos =  x - this.WIDTH/2 +  Math.floor((Math.random() * 10) -5);
         this.yPos = y;
         this.xSpeed = 0;
-        this.ySpeed = -10;
+        this.ySpeed = upwardsForce;
     }
     draw() {
         colorRect(this.xPos, this.yPos, this.WIDTH, this.HEIGHT, this.colour);

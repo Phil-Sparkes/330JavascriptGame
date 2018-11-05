@@ -26,12 +26,12 @@ let gameObjects = [];
 
 let backgroundImage = new Image();
 
-class CarBallGame {
+class BoxBallGame {
     Run() {
         playerCount = 2;
         window.onload;
 
-        CarBallGame.init();
+        BoxBallGame.init();
 
         this.canvas = document.getElementById('canvas');
         canvasContext = this.canvas.getContext('2d');
@@ -48,12 +48,12 @@ class CarBallGame {
 
         // main loop
         setInterval(function () {
-            CarBallGame.moveEverything();
-            CarBallGame.drawEverything();
+            BoxBallGame.moveEverything();
+            BoxBallGame.drawEverything();
         }, 1000 / FRAMES_PER_SECOND);
 
-        window.addEventListener("keydown", CarBallGame.onKeyDown);
-        window.addEventListener("keyup", CarBallGame.onKeyUp);
+        window.addEventListener("keydown", BoxBallGame.onKeyDown);
+        window.addEventListener("keyup", BoxBallGame.onKeyUp);
     }
 
     static init() {
@@ -83,37 +83,7 @@ class CarBallGame {
         }
 
         // Initialise other game objects depending on game mode
-        switch (gameMode) {
-            case "footBall":
-                net = new Net;
-                net.init(0, TEAM1COLOUR);
-                gameObjects.push(net);
-                net = new Net;
-                net.init(CANVAS_WIDTH - net.WIDTH, TEAM2COLOUR);
-                gameObjects.push(net);
-                ball = new Ball();
-                ball.init(CANVAS_XCENTER, CANVAS_YCENTER, score, DEFAULTCOLOUR);
-                gameObjects.push(ball);
-                break;
-            case "volleyBall":
-                net = new Net;
-                net.init(CANVAS_XCENTER - net.WIDTH/2, DEFAULTCOLOUR);
-                gameObjects.push(net);
-            case "keepyUps":
-                ball = new Ball();
-                ball.init(CANVAS_XCENTER, CANVAS_YCENTER, score, DEFAULTCOLOUR);
-                gameObjects.push(ball);
-                break;
-            case "dodgeBall":
-                let ballXDisplacement = 200;
-                ball = new Ball();
-                ball.init((CANVAS_XCENTER - ballXDisplacement), CANVAS_YCENTER, score, TEAM1COLOUR);
-                gameObjects.push(ball);
-                ball = new Ball();
-                ball.init((CANVAS_XCENTER + ballXDisplacement), CANVAS_YCENTER, score, TEAM2COLOUR);
-                gameObjects.push(ball);
-                break;
-        }
+        GameModeManager.spawnObjects();
     }
 
     static onKeyDown(event) {
@@ -132,7 +102,7 @@ class CarBallGame {
             playerCount = buttonValue;
             gameMode = "startScreen";
         }
-        CarBallGame.init();
+        BoxBallGame.init();
     }
 
 
@@ -145,8 +115,8 @@ class CarBallGame {
             gameObjects[i].update();
             // check collisions between all objects
             for (x = i + 1; x < gameObjects.length; x++) {
-                if (CarBallGame.checkCollision(gameObjects[i], gameObjects[x]))
-                    CarBallGame.collisionResult(gameObjects[i], gameObjects[x]);
+                if (BoxBallGame.checkCollision(gameObjects[i], gameObjects[x]))
+                    BoxBallGame.collisionResult(gameObjects[i], gameObjects[x]);
             }
             // Clamp objects to screen
             gameObjects[i].clamp();
@@ -176,12 +146,12 @@ class CarBallGame {
         if (object1.isBall && !object2.isBall) {
             object1.xSpeed = angleX;
             object1.ySpeed = angleY;
-            score.ballHitObject(object1, object2);
+            GameModeManager.ballHitObject(object1, object2);
         }
         else if (!object1.isBall && object2.isBall) {
             object2.xSpeed = -angleX;
             object2.ySpeed = -angleY;
-            score.ballHitObject(object2, object1);
+            GameModeManager.ballHitObject(object2, object1);
             }
         else {
             // otherwise both objects are acted upon
@@ -202,16 +172,8 @@ class CarBallGame {
             gameObjects[i].draw();
         }
         // Draw Score
-        score.draw();
-        switch (gameMode) {
-            case "startScreen":
-                TextToScreen.drawControls(playerCount);
-                break;
-            case "gameOver":
-                TextToScreen.drawGameOver();
-                break;
-        }
+        GameModeManager.draw();
     }
 }
 
-CarBallGameInst = new CarBallGame();
+BoxBallGameInst = new BoxBallGame();
