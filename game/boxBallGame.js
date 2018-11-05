@@ -63,21 +63,21 @@ class BoxBallGame {
 
         let playerDisplacement = 50;
         // Initialise players
-        player = new Car();
+        player = new Player();
         player.init(playerDisplacement ,CANVAS_HEIGHT, TEAM1COLOUR, KEYCODE_w, KEYCODE_a, KEYCODE_s, KEYCODE_d);
         gameObjects.push(player);
         if (playerCount >= 2) {
-            player = new Car();
+            player = new Player();
             player.init(CANVAS_WIDTH - player.WIDTH - playerDisplacement, CANVAS_HEIGHT, TEAM2COLOUR, KEYCODE_up_arrow, KEYCODE_left_arrow, KEYCODE_down_arrow, KEYCODE_right_arrow);
             gameObjects.push(player);
         }
         if (playerCount >= 3) {
-            player = new Car();
+            player = new Player();
             player.init(playerDisplacement*2, CANVAS_HEIGHT, TEAM1COLOUR, KEYCODE_i, KEYCODE_j, KEYCODE_k, KEYCODE_l);
             gameObjects.push(player);
         }
         if (playerCount >= 4) {
-            player = new Car();
+            player = new Player();
             player.init(CANVAS_WIDTH  - player.WIDTH - playerDisplacement*2, CANVAS_HEIGHT, TEAM2COLOUR, KEYCODE_numpad_8, KEYCODE_numpad_4, KEYCODE_numpad_5, KEYCODE_numpad_6);
             gameObjects.push(player);
         }

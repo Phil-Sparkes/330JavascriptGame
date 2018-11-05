@@ -1,4 +1,4 @@
-class Car extends GameObject {
+class Player extends GameObject {
     constructor() {
         super();
         this.ACCELERATION = 1;
@@ -44,7 +44,7 @@ class Car extends GameObject {
 
         this.ySpeed += GRAVITY;
 
-        // Clamp car speed
+        // Clamp player speed
         if (this.xSpeed > this.MAX_SPEED)
             this.xSpeed = this.MAX_SPEED;
         else if (this.xSpeed < -this.MAX_SPEED)
@@ -60,7 +60,7 @@ class Car extends GameObject {
     }
 
     clamp() {
-        // clamp car position
+        // clamp player position
         if (this.xPos < 0) {
             this.xPos = 0;
             this.xSpeed = 0;
